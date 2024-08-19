@@ -1,38 +1,66 @@
 <script setup lang="ts">
-import PokemonItemList from '@/components/PokemonItemList.vue'
 import IconFavorite from '@/assets/icons/IconFavorite.vue'
 import IconAll from '@/assets/icons/IconAll.vue'
-import { ref } from 'vue'
+import router from '@/router'
+import { ref, watchEffect } from 'vue'
+import { useRoute } from 'vue-router'
 
-const fail = ref(true)
-const toggloFail = () => (fail.value = false)
+const route = useRoute()
+const valueInput = ref<string>(route.query.name as string)
+
+const searchPokemon = async (namePokemon: string) => {
+  router.push({ name: 'pokemon-search', query: { name: namePokemon } })
+}
+
+const goFavorites = () => {
+  valueInput.value = ''
+  router.push({ name: 'pokemons-favorites' })
+}
+const goAll = () => {
+  valueInput.value = ''
+  router.push({ name: 'pokemons-all' })
+}
+
+watchEffect(() => {
+  valueInput.value = route.query.name as string
+})
 </script>
 
 <template>
   <main class="container">
     <div class="container-input">
-      <input class="input-search" type="text" name="search" placeholder="Search" />
+      <input
+        class="input-search"
+        type="search"
+        name="search"
+        placeholder="Search"
+        v-model="valueInput"
+        @keyup.enter="() => searchPokemon(valueInput)"
+      />
     </div>
-    <div class="container-fail" v-if="fail">
-      <p class="text-title">Uh-oh!</p>
-      <span class="text-default">You look lost on your journey!</span>
-      <button @click="toggloFail" class="btn-primary btn-back">Go back home</button>
+    <div class="list">
+      <RouterView />
     </div>
-    <div class="container-nav-list" v-else>
-      <div class="list">
-        <PokemonItemList />
-      </div>
-      <nav class="nav-container">
-        <button class="btn btn-primary">
-          <IconAll class="icon" />
-          All
-        </button>
-        <button class="btn btn-secondary">
-          <IconFavorite color="#ffff" class="icon" />
-          Favorites
-        </button>
-      </nav>
-    </div>
+    <nav class="nav-container">
+      <button
+        class="btn"
+        :class="router.currentRoute.value.name === 'pokemons-all' ? 'btn-primary' : 'btn-secondary'"
+        @click="goAll"
+      >
+        <IconAll class="icon" />
+        All
+      </button>
+      <button
+        class="btn"
+        :class="
+          router.currentRoute.value.name === 'pokemons-favorites' ? 'btn-primary' : 'btn-secondary'
+        "
+        @click="goFavorites"
+      >
+        <IconFavorite color="#ffff" class="icon" />
+        Favorites
+      </button>
+    </nav>
   </main>
 </template>
 
@@ -42,13 +70,13 @@ const toggloFail = () => (fail.value = false)
   flex-direction: column;
   align-items: center;
   width: 100%;
-  padding: 0 30px 0;
   .container-input {
     margin: 30px 0 35px;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    padding: 0 30px 0;
     .input-search {
       max-width: 570px;
       width: 100%;
@@ -63,54 +91,35 @@ const toggloFail = () => (fail.value = false)
       box-shadow: 0px 2px 10px 0px #0000000a;
     }
   }
-  .container-fail {
+
+  .list {
+    padding: 0 30px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .nav-container {
+    position: fixed;
+    bottom: 0;
+    background-color: #ffffff;
+    height: 80px;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
     gap: 15px;
-    .text-title {
-      font-size: 36px;
-    }
-    .text-default {
-      font-size: 20px;
-    }
-    .btn-back {
-      margin-top: 20px;
-    }
-  }
-  .container-nav-list {
-    width: 100%;
-    .list {
-      margin-bottom: 100px;
+    box-shadow: 0px -5px 4px 0px #0000000d;
+    padding: 0 30px 0;
+    .btn {
+      max-width: 275px;
       width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .nav-container {
-      position: fixed;
-      bottom: 0;
-      background-color: #ffffff;
-      height: 80px;
-      width: 100%;
+      font-weight: 700;
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 15px;
-      box-shadow: 0px -5px 4px 0px #0000000d;
-      padding: 0 30px 0;
-      .btn {
-        max-width: 275px;
-        width: 100%;
-        font-weight: 700;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 10px;
-        .icon {
-          color: #ffffff;
-        }
+      gap: 10px;
+      .icon {
+        color: #ffffff;
       }
     }
   }

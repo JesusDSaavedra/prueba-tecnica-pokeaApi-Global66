@@ -1,14 +1,27 @@
 <script setup lang="ts">
-import FavoriteButton from './FavoriteButton.vue'
+import FavoriteButton from '../FavoriteButton.vue'
 import IconClose from '@/assets/icons/IconClose.vue'
+import IconPokeball from '@/assets/icons/IconPokeball.vue'
+import { usePokemonCard } from './composable/usePokemonCard'
+import { watchEffect } from 'vue'
+
+interface Props {
+  pokemon_name: string
+}
+const props = defineProps<Props>()
+
+const { copied, copy, pokemon, capitalizeFirstLetter, isFetching } = usePokemonCard(props)
 
 const emit = defineEmits(['close'])
 
 const closeModal = () => {
   emit('close')
 }
-</script>
 
+watchEffect(() => {
+  console.log(isFetching.value)
+})
+</script>
 <template>
   <div class="modal">
     <article class="pokemon-card">
@@ -16,29 +29,38 @@ const closeModal = () => {
         <button @click="closeModal" class="btn-close">
           <IconClose />
         </button>
+        <div class="pokeball" v-if="isFetching">
+          <IconPokeball />
+        </div>
+        <img :src="pokemon?.frontSprite" :alt="pokemon?.name" class="pokemon-img" />
         <img
-          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
-          alt="pokemon image"
-          class="pokemon-img"
-        />
-        <img
-          src="../assets/images/background-image.webp"
+          src="../../assets/images/background-image.webp"
           alt="background image"
           class="background-img"
         />
       </header>
       <footer class="container-footer">
         <div class="container-info">
-          <p class="text-info text-default"><strong class="text-title">Name:</strong> Squirtle</p>
-          <p class="text-info text-default"><strong class="text-title">Weight:</strong> 20</p>
-          <p class="text-info text-default"><strong class="text-title">Height:</strong> 18</p>
           <p class="text-info text-default">
-            <strong class="text-title">Types:</strong> Normal, Watter
+            <strong class="text-title">Name:</strong>
+            {{ capitalizeFirstLetter(pokemon?.name ?? '') }}
+          </p>
+          <p class="text-info text-default">
+            <strong class="text-title">Weight:</strong> {{ pokemon?.weight }}
+          </p>
+          <p class="text-info text-default">
+            <strong class="text-title">Height:</strong> {{ pokemon?.height }}
+          </p>
+          <p class="text-info text-default">
+            <strong class="text-title">Types:</strong>
+            {{ pokemon?.types.map((type) => capitalizeFirstLetter(type)).join(', ') }}
           </p>
         </div>
         <div class="container-btns">
-          <button class="btn-primary">Share to my friends</button>
-          <FavoriteButton />
+          <button @click="copy()" class="btn-primary">
+            {{ copied ? 'Copied!' : 'Share to my friends' }}
+          </button>
+          <FavoriteButton :pokemon_name="pokemon?.name ?? ''" />
         </div>
       </footer>
     </article>
@@ -69,18 +91,23 @@ const closeModal = () => {
   .container-images {
     position: relative;
     height: 220px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     .btn-close {
       position: absolute;
       right: 0;
+      top: 0;
       z-index: 100;
-      margin: 14px;
       border: none;
       border-radius: 50%;
       width: 26px;
       height: 26px;
       background: transparent;
       cursor: pointer;
+      transform: translate(-15px, 8px);
     }
 
     .pokemon-img {
@@ -118,6 +145,20 @@ const closeModal = () => {
       display: flex;
       justify-content: space-between;
     }
+  }
+}
+
+.pokeball {
+  animation: rotation 1.5s infinite linear;
+  position: absolute;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }
 </style>

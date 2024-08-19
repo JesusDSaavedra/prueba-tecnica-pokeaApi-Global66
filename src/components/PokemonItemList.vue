@@ -1,39 +1,18 @@
 <script setup lang="ts">
-import PokemonCardInfo from './PokemonCardInfo.vue'
+import IconPokeball from '@/assets/icons/IconPokeball.vue'
 import PokemonItem from './PokemonItem.vue'
-import { ref } from 'vue'
 
-const showModal = ref(false)
-
-const onClickShowModal = () => {
-  showModal.value = !showModal.value
+interface Props {
+  pokemons: string[]
 }
+
+defineProps<Props>()
 </script>
 
 <template>
   <div class="container-item-list">
-    <PokemonItem @click="onClickShowModal" />
-    <PokemonItem />
-    <PokemonItem />
-    <PokemonItem />
-    <PokemonItem />
-    <PokemonItem />
-    <PokemonItem />
-    <PokemonItem />
-    <PokemonItem />
-    <PokemonItem />
-    <PokemonItem />
-    <PokemonItem />
-    <PokemonItem />
-    <PokemonItem />
-    <PokemonItem />
-    <PokemonItem />
+    <PokemonItem v-for="pokemon of pokemons" :key="pokemon" :pokemon="pokemon" />
   </div>
-  <Teleport to="body">
-    <Transition name="favorite-transition" mode="out-in">
-      <PokemonCardInfo v-if="showModal" @close="onClickShowModal" />
-    </Transition>
-  </Teleport>
 </template>
 
 <style scoped>
