@@ -1,15 +1,30 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import IconFavorite from '@/assets/icons/IconFavorite.vue'
+import { usePokemonStore } from '../stores/pokemon'
 
-const isFavorited = ref<boolean>(true)
-const togglefavorite = () => (isFavorited.value = !isFavorited.value)
+interface Props {
+  pokemon_name: string
+}
+
+defineProps<Props>()
+
+const store = usePokemonStore()
+
+const toggleFavorite = (pokemon_name: string) => {
+  const isFavorite = store.existFavorite(pokemon_name)
+
+  if (isFavorite) {
+    store.removeFavorite(pokemon_name)
+    return
+  }
+  store.addFavorite(pokemon_name)
+}
 </script>
 
 <template>
-  <button @click="togglefavorite" class="btn-favorite">
+  <button @click="toggleFavorite(pokemon_name)" class="btn-favorite">
     <Transition name="favorite-transition" mode="out-in">
-      <IconFavorite color="#ECA539" v-if="isFavorited" />
+      <IconFavorite color="#ECA539" v-if="store.existFavorite(pokemon_name)" />
       <IconFavorite color="#BFBFBF" v-else />
     </Transition>
   </button>
