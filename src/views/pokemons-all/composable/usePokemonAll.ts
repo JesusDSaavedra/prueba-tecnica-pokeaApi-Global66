@@ -3,6 +3,8 @@ import { usePokemons } from '@/composables/usePokemons'
 import { usePokemonStore } from '@/stores/pokemon'
 import { useInfiniteScroll, useVirtualList } from '@vueuse/core'
 
+const LIMIT_PAGES = 64
+
 export const usePokemonsAll = () => {
   const page = ref<number>(0)
 
@@ -19,7 +21,7 @@ export const usePokemonsAll = () => {
 
   watchEffect(() => {
     if (Object.keys(store.pokemonsAPI).length !== 0) {
-      store.changeInitialLoder(false)
+      store.changeInitialLoader(false)
       initialLoader.value = false
     }
     pokemonsView.value = Object.keys(store.pokemonsAPI)
@@ -31,7 +33,7 @@ export const usePokemonsAll = () => {
 
   const loadMorePosts = () => {
     if (pokemonsView.value.length === 0 && page.value === 0) return
-    if (page.value > 64) return
+    if (page.value > LIMIT_PAGES) return
     page.value = page.value + 1
   }
 

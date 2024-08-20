@@ -1,17 +1,12 @@
 <script setup lang="ts">
 import WelcomeImage from '@/assets/images/WelcomeImage.vue'
 import { usePokemonStore } from '@/stores/pokemon'
-import { watchEffect } from 'vue'
 import router from '@/router'
 
 const store = usePokemonStore()
 
-watchEffect(() => {
-  console.log(store.initialLoader)
-})
-
 const goPokemons = () => {
-  store.changeInitialLoder(true)
+  store.changeInitialLoader(true)
   router.push({ name: 'pokemons' })
 }
 </script>

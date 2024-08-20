@@ -2,22 +2,22 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { addLocalStorage, getLocalStorage } from '@/utils/localStorage'
 
-const getFavoritePokemons = () => {
-  const pokemons = getLocalStorage('favorite-pokemons')
-  if (!pokemons) {
-    return {}
-  }
+interface Favorites {
+  [key: string]: string
+}
 
-  return JSON.parse(pokemons)
+const getFavoritePokemons = (): Favorites => {
+  const pokemons = getLocalStorage('favorite-pokemons')
+  return pokemons ? JSON.parse(pokemons) : {}
 }
 
 export const usePokemonStore = defineStore('pokemons', () => {
   const initialLoader = ref<boolean>(false)
   const currentPokemons = ref<'all' | 'favorites'>('all')
-  const favorites = ref<Record<string, string>>(getFavoritePokemons())
+  const favorites = ref<Favorites>(getFavoritePokemons())
   const pokemonsAPI = ref<Record<string, string>>({})
 
-  const changeInitialLoder = (value: boolean) => {
+  const changeInitialLoader = (value: boolean) => {
     initialLoader.value = value
   }
 
@@ -47,7 +47,7 @@ export const usePokemonStore = defineStore('pokemons', () => {
 
   return {
     initialLoader,
-    changeInitialLoder,
+    changeInitialLoader,
     addFavorite,
     removeFavorite,
     existFavorite,

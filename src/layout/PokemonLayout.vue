@@ -6,24 +6,27 @@ import { ref, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const valueInput = ref<string>(route.query.name as string)
+const valueInput = ref<string>((route.query.name as string) || '')
 
-const searchPokemon = async (namePokemon: string) => {
-  router.push({ name: 'pokemon-search', query: { name: namePokemon } })
+watchEffect(() => {
+  valueInput.value = (route.query.name as string) || ''
+})
+
+const searchPokemon = () => {
+  if (valueInput.value.trim()) {
+    router.push({ name: 'pokemon-search', query: { name: valueInput.value } })
+  }
 }
 
 const goFavorites = () => {
   valueInput.value = ''
   router.push({ name: 'pokemons-favorites' })
 }
+
 const goAll = () => {
   valueInput.value = ''
   router.push({ name: 'pokemons-all' })
 }
-
-watchEffect(() => {
-  valueInput.value = route.query.name as string
-})
 </script>
 
 <template>
@@ -35,7 +38,7 @@ watchEffect(() => {
         name="search"
         placeholder="Search"
         v-model="valueInput"
-        @keyup.enter="() => searchPokemon(valueInput)"
+        @keyup.enter="() => searchPokemon()"
       />
     </div>
     <div class="list">

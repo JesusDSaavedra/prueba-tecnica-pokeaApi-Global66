@@ -23,15 +23,6 @@ import IconPokeball from '@/assets/icons/IconPokeball.vue'
 }
 
 .pokeball {
-  animation: rotation 2s infinite linear;
-}
-
-@keyframes rotation {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  animation: rotation 2s infinite;
 }
 </style>
