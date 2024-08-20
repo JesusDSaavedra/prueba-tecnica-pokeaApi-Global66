@@ -4,7 +4,7 @@ import { usePokemonStore } from '@/stores/pokemon'
 export const usePokemonsFavorite = () => {
   const store = usePokemonStore()
 
-  const pokemonsView = computed<string[]>(() => Object.keys(store.favorites))
+  const pokemonsView = computed<string[]>(() => store.favorites)
 
   return {
     pokemonsView

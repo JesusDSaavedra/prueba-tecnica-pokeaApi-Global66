@@ -14,17 +14,17 @@ export const usePokemonsAll = () => {
   const initialLoader = ref<boolean>(store.initialLoader)
 
   watchEffect(() => {
-    store.changePokemonsAPI(pokemons.value ?? {})
+    store.changePokemonsAPI(pokemons.value ?? [])
   })
 
   const pokemonsView = ref<string[]>([])
 
   watchEffect(() => {
-    if (Object.keys(store.pokemonsAPI).length !== 0) {
+    if (store.pokemonsAPI.length !== 0) {
       store.changeInitialLoader(false)
       initialLoader.value = false
     }
-    pokemonsView.value = Object.keys(store.pokemonsAPI)
+    pokemonsView.value = store.pokemonsAPI
   })
 
   const { list, containerProps, wrapperProps } = useVirtualList(pokemonsView, {
@@ -43,6 +43,7 @@ export const usePokemonsAll = () => {
     list,
     containerProps,
     wrapperProps,
-    initialLoader
+    initialLoader,
+    pokemonsView
   }
 }
