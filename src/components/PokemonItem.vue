@@ -8,8 +8,8 @@ interface Props {
 }
 
 defineProps<Props>()
+const showModal = ref<boolean>(false)
 
-const showModal = ref(false)
 const onClickShowModal = () => {
   showModal.value = !showModal.value
 }

@@ -1,27 +1,20 @@
 <script setup lang="ts">
 import PokemonItem from '@/components/PokemonItem.vue'
 import { useRoute } from 'vue-router'
-import { ref, watchEffect } from 'vue'
+import { computed } from 'vue'
 import { usePokemon } from '../composables/usePokemon'
 import router from '@/router'
 import IconPokeball from '@/assets/icons/IconPokeball.vue'
 
 const route = useRoute()
 
-const searchValue = ref<string>(route.query.name as string)
+const searchValue = computed(() => route.query.name as string)
 
 const { isError, pokemon, isLoading } = usePokemon(searchValue)
 
 const goBack = () => {
-  searchValue.value = ''
   router.push({ name: 'pokemons-all' })
 }
-watchEffect(() => {
-  searchValue.value = route.query.name as string
-})
-watchEffect(() => {
-  console.log(isLoading.value)
-})
 </script>
 
 <template>
@@ -76,15 +69,6 @@ watchEffect(() => {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-  }
-}
-
-@keyframes rotation {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
   }
 }
 </style>

@@ -11,7 +11,8 @@ export const usePokemon = (name: string | Ref<string>) => {
     isFetching
   } = useQuery({
     queryKey: ['pokemon', name],
-    queryFn: () => getPokemonById(typeof name === 'string' ? name : name.value),
+    queryFn: () =>
+      getPokemonById(typeof name === 'string' ? name.toLowerCase() : name.value.toLowerCase()),
     staleTime: 1000 * 60 * 30,
     retry: 2
   })

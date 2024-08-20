@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import PokemonItemList from '@/components/PokemonItemList.vue'
 import { usePokemonsAll } from './composable/usePokemonAll'
-import { usePokemon } from '../../composables/usePokemon'
-import { watchEffect } from 'vue'
 import LoaderComponent from '@/components/LoaderComponent.vue'
 
 const { list, containerProps, wrapperProps, initialLoader } = usePokemonsAll()

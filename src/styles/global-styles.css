@@ -80,3 +80,22 @@ body {
   margin: 0;
   font-weight: normal;
 }
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.favorite-transition-enter-active,
+.favorite-transition-leave-active {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.favorite-transition-enter-from,
+.favorite-transition-leave-to {
+  opacity: 0;
+}

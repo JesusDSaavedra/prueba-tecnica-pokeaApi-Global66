@@ -2,22 +2,20 @@ import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { addLocalStorage, getLocalStorage } from '@/utils/localStorage'
 
-const getFavoritePokemons = () => {
-  const pokemons = getLocalStorage('favorite-pokemons')
-  if (!pokemons) {
-    return {}
-  }
+const LOCAL_STORAGE_KEY = 'favorite-pokemons'
 
-  return JSON.parse(pokemons)
+const getFavoritePokemons = (): string[] => {
+  const pokemons = getLocalStorage('favorite-pokemons')
+  return pokemons ? JSON.parse(pokemons) : []
 }
 
 export const usePokemonStore = defineStore('pokemons', () => {
   const initialLoader = ref<boolean>(false)
   const currentPokemons = ref<'all' | 'favorites'>('all')
-  const favorites = ref<Record<string, string>>(getFavoritePokemons())
-  const pokemonsAPI = ref<Record<string, string>>({})
+  const favorites = ref<string[]>(getFavoritePokemons())
+  const pokemonsAPI = ref<string[]>([])
 
-  const changeInitialLoder = (value: boolean) => {
+  const changeInitialLoader = (value: boolean) => {
     initialLoader.value = value
   }
 
@@ -27,27 +25,26 @@ export const usePokemonStore = defineStore('pokemons', () => {
   }
 
   const addFavorite = (pokemon_name: string) => {
-    favorites.value = { ...favorites.value, [pokemon_name]: pokemon_name }
-    addLocalStorage('favorite-pokemons', JSON.stringify(favorites.value))
+    favorites.value = [...favorites.value, pokemon_name]
+    addLocalStorage(LOCAL_STORAGE_KEY, JSON.stringify(favorites.value))
   }
 
   const removeFavorite = (pokemon_name: string) => {
-    const { [pokemon_name]: _, ...restPokemons } = favorites.value
-    favorites.value = restPokemons
-    addLocalStorage('favorite-pokemons', JSON.stringify(favorites.value))
+    favorites.value = favorites.value.filter((name) => name !== pokemon_name)
+    addLocalStorage(LOCAL_STORAGE_KEY, JSON.stringify(favorites.value))
   }
 
   const existFavorite = (pokemon_name: string) => {
-    return favorites.value[pokemon_name]
+    return favorites.value.includes(pokemon_name)
   }
 
-  const changePokemonsAPI = (pokemons: Record<string, string>) => {
-    pokemonsAPI.value = { ...pokemonsAPI.value, ...pokemons }
+  const changePokemonsAPI = (pokemons: string[]) => {
+    pokemonsAPI.value = [...pokemonsAPI.value, ...pokemons]
   }
 
   return {
     initialLoader,
-    changeInitialLoder,
+    changeInitialLoader,
     addFavorite,
     removeFavorite,
     existFavorite,

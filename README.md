@@ -22,7 +22,7 @@ Esta prueba técnica demuestra la creación de una aplicación Vue 3 que consume
 - **Rutas**: Permite navegar entre diferentes secciones de la aplicación (e.g., lista de Pokémones, favoritos).
 
 ## Estructura del Proyecto
-
+```
 src/
 ├── assets/  
 ├── components/  
@@ -60,7 +60,7 @@ src/
 ├── App.vue  
 ├── main.ts  
 └── ...
-
+```
 ## Cómo Ejecutar el Proyecto
 
 1. Clona el repositorio.

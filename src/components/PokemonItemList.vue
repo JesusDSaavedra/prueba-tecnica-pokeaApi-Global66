@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import IconPokeball from '@/assets/icons/IconPokeball.vue'
 import PokemonItem from './PokemonItem.vue'
 
 interface Props {
